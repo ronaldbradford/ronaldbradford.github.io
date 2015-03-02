@@ -1,0 +1,11 @@
+markdown: kramdown
+highlighter: pygments
+github: [Repository metadata]
+
+google_analytics_id: UA-1035567-7
+
+repository: https://github.com/ronaldbradford/ronaldbradford.github.io
+
+collections:
+  docs:
+    output: true
