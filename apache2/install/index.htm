@@ -1,0 +1,117 @@
+<h1>Installing Apache Web Server</h1>
+
+<h2>Overview</h2>
+<p>The <a href="http://httpd.apache.org/">Apache HTTP Server</a>, commonly known as "apache" or "apache2" is a popular and generally default web container for serving web content.</p>
+
+<h2>Quick Version</h2>
+
+<h3>Ubuntu</h3>
+<pre>
+[ `grep ${HOSTNAME} /etc/hosts | wc -l` -eq 0 ] && sudo sed -ie '/^127.0.0.1/ s/$/ '${HOSTNAME}'/' /etc/hosts
+sudo apt-get install -y apache2
+echo "ServerName $HOSTNAME" | sudo tee /etc/apache2/conf-enabled/local.conf
+sudo service apache2 restart
+curl http://localhost
+</pre>
+
+<h3>Notes</h3>
+<ol>
+<li>We ensure the hostname is added to <code>/etc/hosts</code> before installation to avoid both a sudo warning and a SSL generation error as demonstrated in the below warnings section.</li>
+<li>We add a <code>ServerName</code> configuration directive to avoid a warning message when starting/stopping the apache2 service</li>
+</ol>
+
+<p>If the hostname is specified after installation, the following commands correct the SSL error.</p>
+<pre>
+sudo make-ssl-cert generate-default-snakeoil --force-overwrite
+sudo apachectl restart
+</pre>
+
+<h2>Detailed Version</h2>
+<pre>
+$ sudo apt-get install -y apache2
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  apache2-bin apache2-data
+Suggested packages:
+  apache2-doc apache2-suexec-pristine apache2-suexec-custom apache2-utils
+The following NEW packages will be installed:
+  apache2 apache2-bin apache2-data
+0 upgraded, 3 newly installed, 0 to remove and 132 not upgraded.
+Need to get 0 B/1,086 kB of archives.
+After this operation, 4,573 kB of additional disk space will be used.
+Selecting previously unselected package apache2-bin.
+(Reading database ... 62812 files and directories currently installed.)
+Preparing to unpack .../apache2-bin_2.4.7-1ubuntu4.1_amd64.deb ...
+Unpacking apache2-bin (2.4.7-1ubuntu4.1) ...
+Selecting previously unselected package apache2-data.
+Preparing to unpack .../apache2-data_2.4.7-1ubuntu4.1_all.deb ...
+Unpacking apache2-data (2.4.7-1ubuntu4.1) ...
+Selecting previously unselected package apache2.
+Preparing to unpack .../apache2_2.4.7-1ubuntu4.1_amd64.deb ...
+Unpacking apache2 (2.4.7-1ubuntu4.1) ...
+Processing triggers for man-db (2.6.7.1-1) ...
+Processing triggers for ureadahead (0.100.0-16) ...
+Processing triggers for ufw (0.34~rc-0ubuntu2) ...
+Setting up apache2-bin (2.4.7-1ubuntu4.1) ...
+Setting up apache2-data (2.4.7-1ubuntu4.1) ...
+Setting up apache2 (2.4.7-1ubuntu4.1) ...
+Enabling module mpm_event.
+Enabling module authz_core.
+Enabling module authz_host.
+Enabling module authn_core.
+Enabling module auth_basic.
+Enabling module access_compat.
+Enabling module authn_file.
+Enabling module authz_user.
+Enabling module alias.
+Enabling module dir.
+Enabling module autoindex.
+Enabling module env.
+Enabling module mime.
+Enabling module negotiation.
+Enabling module setenvif.
+Enabling module filter.
+Enabling module deflate.
+Enabling module status.
+Enabling conf charset.
+Enabling conf localized-error-pages.
+Enabling conf other-vhosts-access-log.
+Enabling conf security.
+Enabling conf serve-cgi-bin.
+Enabling site 000-default.
+ * Starting web server apache2                                                                  AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
+ *
+Processing triggers for ureadahead (0.100.0-16) ...
+Processing triggers for ufw (0.34~rc-0ubuntu2) ...
+</pre>
+
+<pre>
+$ echo "ServerName $HOSTNAME" | sudo tee /etc/apache2/conf-enabled/local.conf
+$ sudo service apache2 restart
+ * Restarting web server apache2                                                         [ OK ]
+</pre>
+
+<h3>Undefined host warning messages</h3>
+<pre>
+$ sudo apt-get install -y apache2
+<u>sudo: unable to resolve host dev-01</u>
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+...
+Enabling site 000-default.
+ * Starting web server apache2                AH00557: apache2: apr_sockaddr_info_get() failed for dev-01
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
+ *
+Setting up ssl-cert (1.0.33) ...
+<u>hostname: Name or service not known
+make-ssl-cert: Could not get FQDN, using "dev-01".
+make-ssl-cert: You may want to fix your /etc/hosts and/or DNS setup and run
+make-ssl-cert: make-ssl-cert generate-default-snakeoil --force-overwrite
+make-ssl-cert: again. </u>
+Processing triggers for ureadahead (0.100.0-16) ...
+Processing triggers for ufw (0.34~rc-0ubuntu2) ...
+</pre>
+

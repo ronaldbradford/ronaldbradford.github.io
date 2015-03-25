@@ -1,0 +1,103 @@
+<h1>PHP Installation</h1>
+
+While PHP can be used standalone, it is most often used with a web container. In this example we are using <a href="/apache/install/">Apache Web Server</a>.
+
+
+<h2>Quick Version</h2>
+
+<h2>Detailed Version</h2>
+
+<pre>
+$ sudo apt-get install -y libapache2-mod-php5
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following extra packages will be installed:
+  php5-cli php5-common php5-json php5-readline
+Suggested packages:
+  php-pear php5-user-cache
+The following NEW packages will be installed:
+  libapache2-mod-php5 php5-cli php5-common php5-json php5-readline
+0 upgraded, 5 newly installed, 0 to remove and 132 not upgraded.
+Need to get 4,861 kB of archives.
+After this operation, 20.4 MB of additional disk space will be used.
+Get:1 http://nova.clouds.archive.ubuntu.com/ubuntu/ trusty/main php5-json amd64 1.3.2-2build1 [34.4 kB]
+Get:2 http://nova.clouds.archive.ubuntu.com/ubuntu/ trusty-updates/main php5-common amd64 5.5.9+dfsg-1ubuntu4.6 [443 kB]
+Get:3 http://nova.clouds.archive.ubuntu.com/ubuntu/ trusty-updates/main php5-cli amd64 5.5.9+dfsg-1ubuntu4.6 [2,162 kB]
+Get:4 http://nova.clouds.archive.ubuntu.com/ubuntu/ trusty-updates/main php5-readline amd64 5.5.9+dfsg-1ubuntu4.6 [12.1 kB]
+Get:5 http://nova.clouds.archive.ubuntu.com/ubuntu/ trusty-updates/main libapache2-mod-php5 amd64 5.5.9+dfsg-1ubuntu4.6 [2,209 kB]
+Fetched 4,861 kB in 2s (1,675 kB/s)
+Selecting previously unselected package php5-json.
+(Reading database ... 63419 files and directories currently installed.)
+Preparing to unpack .../php5-json_1.3.2-2build1_amd64.deb ...
+Unpacking php5-json (1.3.2-2build1) ...
+Selecting previously unselected package php5-common.
+Preparing to unpack .../php5-common_5.5.9+dfsg-1ubuntu4.6_amd64.deb ...
+Unpacking php5-common (5.5.9+dfsg-1ubuntu4.6) ...
+Selecting previously unselected package php5-cli.
+Preparing to unpack .../php5-cli_5.5.9+dfsg-1ubuntu4.6_amd64.deb ...
+Unpacking php5-cli (5.5.9+dfsg-1ubuntu4.6) ...
+Selecting previously unselected package php5-readline.
+Preparing to unpack .../php5-readline_5.5.9+dfsg-1ubuntu4.6_amd64.deb ...
+Unpacking php5-readline (5.5.9+dfsg-1ubuntu4.6) ...
+Selecting previously unselected package libapache2-mod-php5.
+Preparing to unpack .../libapache2-mod-php5_5.5.9+dfsg-1ubuntu4.6_amd64.deb ...
+Unpacking libapache2-mod-php5 (5.5.9+dfsg-1ubuntu4.6) ...
+Processing triggers for man-db (2.6.7.1-1) ...
+Setting up php5-json (1.3.2-2build1) ...
+php5_invoke: Enable module json for apache2 SAPI
+php5_invoke: Enable module json for cli SAPI
+Setting up php5-common (5.5.9+dfsg-1ubuntu4.6) ...
+
+Creating config file /etc/php5/mods-available/pdo.ini with new version
+php5_invoke: Enable module pdo for apache2 SAPI
+php5_invoke: Enable module pdo for cli SAPI
+
+Creating config file /etc/php5/mods-available/opcache.ini with new version
+php5_invoke: Enable module opcache for apache2 SAPI
+php5_invoke: Enable module opcache for cli SAPI
+Setting up php5-cli (5.5.9+dfsg-1ubuntu4.6) ...
+update-alternatives: using /usr/bin/php5 to provide /usr/bin/php (php) in auto mode
+
+Creating config file /etc/php5/cli/php.ini with new version
+php5_invoke pdo: already enabled for cli SAPI
+php5_invoke json: already enabled for cli SAPI
+php5_invoke opcache: already enabled for cli SAPI
+Setting up php5-readline (5.5.9+dfsg-1ubuntu4.6) ...
+
+Creating config file /etc/php5/mods-available/readline.ini with new version
+php5_invoke: Enable module readline for apache2 SAPI
+php5_invoke: Enable module readline for cli SAPI
+Setting up libapache2-mod-php5 (5.5.9+dfsg-1ubuntu4.6) ...
+
+Creating config file /etc/php5/apache2/php.ini with new version
+php5_invoke pdo: already enabled for apache2 SAPI
+php5_invoke readline: already enabled for apache2 SAPI
+php5_invoke json: already enabled for apache2 SAPI
+php5_invoke opcache: already enabled for apache2 SAPI
+Module mpm_event disabled.
+Enabling module mpm_prefork.
+apache2_switch_mpm Switch to prefork
+ * Restarting web server apache2                                                         [ OK ]
+apache2_invoke: Enable module php5
+ * Restarting web server apache2                                                         [ OK ]
+</pre>
+
+<pre>
+$ php -i | head
+phpinfo()
+PHP Version => 5.5.9-1ubuntu4.6
+
+System => Linux dev-01 3.13.0-30-generic #55-Ubuntu SMP Fri Jul 4 21:40:53 UTC 2014 x86_64
+Build Date => Feb 13 2015 19:15:39
+Server API => Command Line Interface
+Virtual Directory Support => disabled
+Configuration File (php.ini) Path => /etc/php5/cli
+Loaded Configuration File => /etc/php5/cli/php.ini
+Scan this dir for additional .ini files => /etc/php5/cli/conf.d
+</pre>
+
+<pre>
+$ echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/p.php
+$ curl --silent http://localhost/p.php
+</pre>

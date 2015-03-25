@@ -1,0 +1,80 @@
+<h1>HA Proxy Installation</h1>
+
+<h2>Overview</h2>
+
+<h2>Pre Requisites</h2>
+<ul>
+<li>A web server container</li>
+<li>Optionally (for verification) PHP installed on web server container</li>
+</ul>
+
+<h2>Quick Version</h2>
+<pre>
+sudo apt-get install -y haproxy
+sudo sed -ie "s/ENABLED=0/ENABLED=1/" /etc/default/haproxy
+echo "" | sudo tee /etc/haproxy/haproxy.cfg
+sudo service haproxy start
+</pre>
+
+
+<h2>Detailed Version</h2>
+<pre>
+$ sudo apt-get install -y haproxy
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+Suggested packages:
+  vim-haproxy
+The following NEW packages will be installed:
+  haproxy
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 453 kB of archives.
+After this operation, 822 kB of additional disk space will be used.
+Get:1 http://nova.clouds.archive.ubuntu.com/ubuntu/ trusty/main haproxy amd64 1.4.24-2 [453 kB]
+Fetched 453 kB in 0s (776 kB/s)
+Selecting previously unselected package haproxy.
+(Reading database ... 51111 files and directories currently installed.)
+Preparing to unpack .../haproxy_1.4.24-2_amd64.deb ...
+Unpacking haproxy (1.4.24-2) ...
+Processing triggers for ureadahead (0.100.0-16) ...
+Processing triggers for man-db (2.6.7.1-1ubuntu1) ...
+Setting up haproxy (1.4.24-2) ...
+Processing triggers for ureadahead (0.100.0-16) ...
+$ sudo sed -ie "s/ENABLED=0/ENABLED=1/" /etc/default/haproxy
+#$ sudo cp /etc/haproxy/haproxy.cfg{,.original}
+echo "global
+    log 127.0.0.1 local0 notice
+    maxconn 2000
+    user haproxy
+    group haproxy
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    retries 3
+    option redispatch
+    timeout connect  5000
+    timeout client  10000
+    timeout server  10000
+
+listen dev 0.0.0.0:80
+    mode http
+    stats enable
+    stats uri /haproxy?stats
+    stats realm Strictly\ Private
+    stats auth admin:passwd
+    balance roundrobin
+    option httpclose
+    option forwardfor
+    server dev-01 10.0.173.7:80 check" | sudo tee /etc/haproxy/haproxy.cfg
+$ sudo service haproxy start
+
+ * Starting haproxy haproxy                                                              [ OK ]
+
+
+
+curl http://158.85.161.249/
+http://158.85.161.249/haproxy?stats
+</pre>

@@ -1,0 +1,53 @@
+<h1>SSH Warnings</h1>
+
+
+<h2>First time check</h2>
+
+
+
+The first time you connect to a host, you will be prompted for authenticity of the host. For example:
+
+<pre>
+$ ssh -i ~/.ssh/demo1 ubuntu@10.0.173.7
+The authenticity of host '10.0.173.7 (10.0.173.7)' can't be established.
+ECDSA key fingerprint is 8c:b6:eb:65:92:14:93:e2:fc:82:12:b7:50:0b:12:3b.
+Are you sure you want to continue connecting (yes/no)?
+</pre>
+
+You can override this needed end user prompt using the <code>StrictHostKeyChecking</code> option.
+
+<pre>
+$ ssh -o StrictHostKeyChecking=no -i demo1 ubuntu@158.85.161.249
+...
+</pre>
+
+You can also add this to your ~/.ssh/config file.
+
+
+<h2>Host has changed warning</h2>
+
+If you startup and shutdown virtual instances that use the same IP address, you may receive the following warning when first connecting.
+
+<pre>
+$ ssh -i demo1 ubuntu@158.85.161.249
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+63:15:24:43:3a:c9:73:ed:22:61:8e:00:4a:05:20:86.
+Please contact your system administrator.
+Add correct host key in /home/user/.ssh/known_hosts to get rid of this message.
+Offending RSA key in /home/user/.ssh/known_hosts:1
+RSA host key for 158.85.161.249 has changed and you have requested strict checking.
+Host key verification failed.
+</pre>
+
+Using the line number from this output, in this case :1, you can delete this line with
+
+<pre>
+$ sed -ie 1d ~/.ssh/known_hosts
+$ ssh -i demo1 ubuntu@158.85.161.249
+</pre>

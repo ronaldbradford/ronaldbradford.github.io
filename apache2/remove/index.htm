@@ -1,0 +1,43 @@
+<h1>Using Ubuntu</h1>
+<pre>
+sudo service apache2 stop
+dpkg -l | grep apache2
+sudo apt-get purge -y apache2 apache2-bin apache2-data
+dpkg -l | grep apache2
+ls -l /etc/apache2 /var/www/html/
+sudo rm -rf /var/www/html /etc/apache2
+</pre>
+
+
+Alternative
+<pre>
+sudo dpkg -r apache2 apache2-bin apache2-data
+dpkg -l | grep apache2
+</pre>
+
+<h2>Detailed Version</h2>
+
+<pre>
+$ sudo apt-get purge apache2
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+The following packages were automatically installed and are no longer required:
+  libaprutil1-dbd-sqlite3 libaprutil1-ldap ssl-cert
+Use 'apt-get autoremove' to remove them.
+The following packages will be REMOVED:
+  apache2*
+0 upgraded, 0 newly installed, 1 to remove and 132 not upgraded.
+After this operation, 0 B of additional disk space will be used.
+Do you want to continue? [Y/n] y
+(Reading database ... 62968 files and directories currently installed.)
+Removing apache2 (2.4.7-1ubuntu4.1) ...
+Purging configuration files for apache2 (2.4.7-1ubuntu4.1) ...
+dpkg: warning: while removing apache2, directory '/etc/apache2/conf-enabled' not empty so not removed
+dpkg: warning: while removing apache2, directory '/var/www/html' not empty so not removed
+</pre>
+
+<pre>
+$ dpkg -l | grep apache2
+rc  apache2                          2.4.7-1ubuntu4.1              amd64        Apache HTTP Server
+</pre>
